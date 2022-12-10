@@ -1,26 +1,25 @@
-dirs = {'R': (0, 1), 'L': (0, -1), 'U': (1, 0), 'D': (-1, 0), }
+dirs = {'U': (1, 0), 'R': (0, 1), 'D': (-1, 0), 'L': (0, -1)}
 
 
 def solve(ropeLen):
     visited = {(0, 0)}
-    rope = [(0, 0)] * ropeLen
-    for move, steps in list(map(lambda x: x.strip("\n").split(" "), open('input', 'r').readlines())):
+    ropes = [(0, 0)] * ropeLen
+    for move, steps in list(map(lambda x: x.split(' '), open('input', 'r').readlines())):
         for _ in range(int(steps)):
-            rope[-1] = (rope[-1][0] + dirs[move][0],
-                        rope[-1][1] + dirs[move][1])
-            for i in range(len(rope) - 2, -1, -1):
-                if abs(rope[i + 1][0] - rope[i][0]) > 1 or abs(rope[i + 1][1] - rope[i][1]) > 1:
-                    diffY = rope[i + 1][0] - rope[i][0]
-                    diffX = rope[i + 1][1] - rope[i][1]
-
-                    rope[i] = (
-                        rope[i][0] + (diffY if abs(diffY)
-                                      == 1 else diffY // 2),
-                        rope[i][1] + (diffX if abs(diffX) == 1 else diffX // 2)
+            ropes[-1] = (ropes[-1][0] + dirs[move][0],
+                         ropes[-1][1] + dirs[move][1])
+            for i in range(len(ropes)-2, -1, -1):
+                curY, curX = ropes[i][0], ropes[i][1]
+                nextY, nextX = ropes[i+1][0], ropes[i+1][1]
+                diffY, diffX = nextY-curY, nextX-curX
+                if abs(diffY) > 1 or abs(diffX) > 1:
+                    ropes[i] = (
+                        ropes[i][0] + (diffY if abs(diffY) == 1 else diffY//2),
+                        ropes[i][1] + (diffX if abs(diffX) == 1 else diffX//2)
                     )
-            visited.add(rope[0])
+            visited.add(ropes[0])
     return len(visited)
 
 
-print(solve(2))
-print(solve(10))
+print('part1', solve(2))
+print('part2', solve(10))
